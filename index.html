@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trident Corporation</title>
+<meta name="theme-color" content="#1f1a15">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trident">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+<style>
+:root{--bg:#f6f3ee;--card:#fff;--tx:#241c15;--mu:#7a6f64;--ac:#a85d1a;--ac2:#fff;--bd:#e3dbd0;--ok:#1e7a46;--rd:#c0392b;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1a1612;--card:#262019;--tx:#f1e9df;--mu:#a89c8e;--ac:#e08a3c;--ac2:#1a1612;--bd:#3a3128;--ok:#4cc17f;--rd:#ef6b5c;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1a1612;--card:#262019;--tx:#f1e9df;--mu:#a89c8e;--ac:#e08a3c;--ac2:#1a1612;--bd:#3a3128;--ok:#4cc17f;--rd:#ef6b5c;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0 auto;background:var(--bg);color:var(--tx);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;padding:14px 14px 90px;min-height:100vh}
+h1{font-size:20px;margin:4px 0 14px}
+h2{font-size:14px;margin:0 0 10px;color:var(--mu);text-transform:uppercase;letter-spacing:.04em}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:14px;padding:14px;margin-bottom:14px}
+.row{display:flex;gap:8px;align-items:center}
+input{width:100%;padding:12px;font-size:16px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx)}
+button{font-size:15px;padding:12px 14px;border-radius:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);cursor:pointer}
+button.p{background:var(--ac);color:var(--ac2);border-color:var(--ac);font-weight:600}
+.big{width:100%;font-size:22px;padding:26px;margin-bottom:12px;border-radius:16px}
+.back{margin-bottom:10px;padding:8px 12px}
+.item{display:block;width:100%;text-align:left;font-size:17px;padding:16px;margin-bottom:8px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:10px 14px;border-radius:999px}
+.chip.on{background:var(--ac);color:var(--ac2);border-color:var(--ac);font-weight:600}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+label{font-size:13px;color:var(--mu);display:block;margin-bottom:4px}
+.h{border-top:1px solid var(--bd);padding:10px 0}
+.h:first-child{border-top:0}
+.h b{font-size:16px}
+.mu{color:var(--mu);font-size:13px}
+.pr{margin-top:4px;font-size:15px;color:var(--ok)}
+.x{float:right;padding:4px 10px;font-size:13px;color:var(--rd)}
+.hide{display:none}
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:99;padding:20px}
+.mb{background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;padding:18px;width:100%;max-width:340px}
+.mb p{margin:0 0 16px;font-size:16px}
+.mb .row button{flex:1}
+.mb .dl{background:var(--rd);border-color:var(--rd);color:#fff;font-weight:600}
+
+.sold{color:var(--ac)}
+.info{display:flex;justify-content:space-between;gap:8px;margin-bottom:6px;font-size:15px}
+.info b{font-size:16px}
+.pl{margin-top:10px;font-size:15px;font-weight:600}
+.ok2{color:var(--ok)}.bad{color:var(--rd)}
+.cc{font-size:12px;opacity:.8;margin-left:4px}
+.nb{font-size:32px;font-weight:700;margin-top:4px}
+.ln{display:flex;justify-content:space-between;gap:8px;padding:6px 0;font-size:15px;border-top:1px solid var(--bd)}
+.ln:first-of-type{border-top:0}
+.ln span:first-child{color:var(--mu)}
+.ln.t{font-weight:700;font-size:16px;border-top:2px solid var(--bd)}
+.sh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.sh b{font-size:16px}
+#sync{text-align:center;font-size:12px;min-height:18px;color:var(--mu)}
+#sync.err{color:var(--rd);cursor:pointer;font-weight:600}
+
+/* ===== Theme picker ===== */
+:root[data-theme="cream"]{--bg:#f3efe6;--card:#fbf8f1;--tx:#2b2620;--mu:#7d7466;--ac:#8a6d3b;--ac2:#fff;--bd:#e0d8c6;--ok:#2f7d4f;--rd:#b8402f;color-scheme:light}
+:root[data-theme="softdark"]{--bg:#14171c;--card:#1e2229;--tx:#e7eaee;--mu:#98a1ad;--ac:#8ab4f8;--ac2:#14171c;--bd:#2d333c;--ok:#4cc17f;--rd:#ef6b5c;color-scheme:dark}
+:root[data-theme="sage"]{--bg:#eef1ea;--card:#f7f9f4;--tx:#1f2a21;--mu:#6b7a6d;--ac:#4f7f5c;--ac2:#fff;--bd:#d6ddd0;--ok:#2e7d4b;--rd:#c0392b;color-scheme:light}
+:root[data-theme="ocean"]{--bg:#edf3f8;--card:#fafcfe;--tx:#1c2a38;--mu:#64788a;--ac:#4a7fa8;--ac2:#fff;--bd:#d3e0ea;--ok:#2a8a5a;--rd:#c0392b;color-scheme:light}
+:root[data-theme="midnight"]{--bg:#0f1626;--card:#172036;--tx:#e4e9f5;--mu:#8f9bb5;--ac:#6c8cff;--ac2:#0f1626;--bd:#26324d;--ok:#4cc17f;--rd:#ef6b5c;color-scheme:dark}
+:root[data-theme="amber"]{--bg:#1b140c;--card:#261c11;--tx:#f3e6d3;--mu:#b09b80;--ac:#d9923a;--ac2:#1b140c;--bd:#3b2c1a;--ok:#4cc17f;--rd:#ef6b5c;color-scheme:dark}
+#thBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 6px);right:10px;z-index:120;width:38px;height:34px;padding:0;font-size:18px;line-height:1;border-radius:10px;opacity:.9}
+#thMenu{position:fixed;top:calc(env(safe-area-inset-top,0px) + 44px);right:10px;z-index:121;background:var(--card);color:var(--tx);border:1px solid var(--bd);border-radius:14px;padding:6px;min-width:200px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+#thMenu button{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:0;background:transparent;font-size:16px;padding:11px 12px;border-radius:10px;color:var(--tx)}
+#thMenu button.on{background:var(--bd);font-weight:700}
+#thMenu i{display:inline-block;width:18px;height:18px;border-radius:50%;border:1px solid rgba(128,128,128,.4);flex:none}
+#ftr{position:fixed;left:0;right:0;bottom:0;z-index:5;text-align:center;font-size:15px;color:var(--mu);background:var(--bg);border-top:1px solid var(--bd);padding:10px 8px calc(10px + env(safe-area-inset-bottom,0px))}
+</style>
+</head>
+<body>
+<div id="sync"></div>
+<div id="app"></div>
+<div id="ftr">© kush jethloja</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ====== FIREBASE CONFIG (plywood-31222) ======
+var FIREBASE_CONFIG={
+  apiKey:"AIzaSyCEzpVDQgTOa1uGLrxsmhiP9Qktll4lwjw",
+  authDomain:"plywood-31222.firebaseapp.com",
+  projectId:"plywood-31222",
+  storageBucket:"plywood-31222.firebasestorage.app",
+  messagingSenderId:"765233241828",
+  appId:"1:765233241828:web:093101025bc5f7ae86d6f1"
+};
+var DEFAULT_SIZES=["8*4 - 18MM","8*3 - 18MM","7*4 - 18MM","7*3 - 18MM","6*4 - 18MM","6*3 - 18MM","8*4 - 12MM","8*3 - 12MM","7*4 - 12MM","7*3 - 12MM","6*4 - 12MM","6*3 - 12MM"];
+var K={c:"ply_clients",sc:"ply_sclients",s:"ply_sizes2",h:"ply_history2",sl:"ply_sales"};
+function load(k,d){try{var v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}
+var clients=[],sclients=[],sizes=DEFAULT_SIZES.slice(),hist=[],sales=[];
+function getData(){return{clients:clients,sclients:sclients,sizes:sizes,hist:hist,sales:sales}}
+function applyData(d){d=d||{};
+  clients=Array.isArray(d.clients)?d.clients:[];
+  sclients=Array.isArray(d.sclients)?d.sclients:[];
+  sizes=(Array.isArray(d.sizes)&&d.sizes.length)?d.sizes:DEFAULT_SIZES.slice();
+  hist=Array.isArray(d.hist)?d.hist:[];
+  sales=Array.isArray(d.sales)?d.sales:[];
+}
+// every old store(...) call now saves everything to the cloud
+function store(){cloudQueue()}
+
+// ================= LOGIN + CLOUD (Firebase REST) =================
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const sha256=(()=>{
+  const KK=[],H0=[];
+  const isPrime=x=>{for(let i=2;i*i<=x;i++)if(x%i===0)return false;return true};
+  for(let n=2;KK.length<64;n++){
+    if(!isPrime(n))continue;
+    if(H0.length<8)H0.push((Math.pow(n,1/2)%1)*4294967296|0);
+    KK.push((Math.pow(n,1/3)%1)*4294967296|0);
+  }
+  const rotr=(x,n)=>(x>>>n)|(x<<(32-n));
+  return msg=>{
+    const bytes=new TextEncoder().encode(msg),l=bytes.length;
+    const total=((l+9+63)>>6)<<6;
+    const buf=new Uint8Array(total);buf.set(bytes);buf[l]=0x80;
+    const dv=new DataView(buf.buffer);
+    dv.setUint32(total-4,(l*8)>>>0);dv.setUint32(total-8,Math.floor(l*8/4294967296));
+    const h=H0.slice(),w=new Array(64);
+    for(let i=0;i<total;i+=64){
+      for(let t=0;t<16;t++)w[t]=dv.getUint32(i+t*4);
+      for(let t=16;t<64;t++){
+        const s0=rotr(w[t-15],7)^rotr(w[t-15],18)^(w[t-15]>>>3);
+        const s1=rotr(w[t-2],17)^rotr(w[t-2],19)^(w[t-2]>>>10);
+        w[t]=(w[t-16]+s0+w[t-7]+s1)|0;
+      }
+      let [a,b,c,d,e,f,g,hh]=h;
+      for(let t=0;t<64;t++){
+        const t1=(hh+(rotr(e,6)^rotr(e,11)^rotr(e,25))+((e&f)^(~e&g))+KK[t]+w[t])|0;
+        const t2=((rotr(a,2)^rotr(a,13)^rotr(a,22))+((a&b)^(a&c)^(b&c)))|0;
+        hh=g;g=f;f=e;e=(d+t1)|0;d=c;c=b;b=a;a=(t1+t2)|0;
+      }
+      [a,b,c,d,e,f,g,hh].forEach((v,j)=>h[j]=(h[j]+v)|0);
+    }
+    return h.map(x=>(x>>>0).toString(16).padStart(8,"0")).join("");
+  };
+})();
+const hashPw=(salt,pw)=>{let h=salt+":"+pw;for(let i=0;i<1000;i++)h=sha256(h+salt);return h};
+
+let user=null,uidFb=null,acct=null,baseTime="",authMode="login";
+let idToken="",refreshTok="",tokenExp=0;
+const FS_ROOT="https://firestore.googleapis.com/v1/projects/"+FIREBASE_CONFIG.projectId+"/databases/(default)/documents/accounts";
+const NET_TIMEOUT=20000;
+const toEmail=u=>u+"@plywood.app";
+const syncEl=document.getElementById("sync");
+let unsaved=false,saving=false,dirty=false;
+function setSync(t,err){syncEl.textContent=t||"";syncEl.className=err?"err":""}
+syncEl.onclick=()=>{if(unsaved)cloudQueue()};
+
+async function jfetch(url,opts){
+  const ctl=new AbortController();
+  const timer=setTimeout(()=>ctl.abort(),NET_TIMEOUT);
+  try{
+    const r=await fetch(url,Object.assign({},opts,{signal:ctl.signal}));
+    const txt=await r.text();
+    let j=null;try{j=JSON.parse(txt)}catch(e){}
+    if(!r.ok){
+      const er=j&&j.error||{};
+      const x=new Error(er.message||("HTTP "+r.status));
+      x.code="http";x.status=r.status;x.msg=er.message||"";x.fstatus=er.status||"";
+      throw x;
+    }
+    return j;
+  }catch(e){
+    if(e.code==="http")throw e;
+    const x=new Error(e.name==="AbortError"?"timeout":"network");
+    x.code=x.message;
+    throw x;
+  }finally{clearTimeout(timer)}
+}
+async function authCall(kind,email,pw){
+  const j=await jfetch("https://identitytoolkit.googleapis.com/v1/accounts:"+kind+"?key="+FIREBASE_CONFIG.apiKey,{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email:email,password:pw,returnSecureToken:true})});
+  idToken=j.idToken;refreshTok=j.refreshToken;
+  tokenExp=Date.now()+(parseInt(j.expiresIn,10)||3600)*1000;
+  return j.localId;
+}
+async function token(){
+  if(Date.now()<tokenExp-60000)return idToken;
+  const j=await jfetch("https://securetoken.googleapis.com/v1/token?key="+FIREBASE_CONFIG.apiKey,{
+    method:"POST",headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:"grant_type=refresh_token&refresh_token="+encodeURIComponent(refreshTok)});
+  idToken=j.id_token;refreshTok=j.refresh_token;
+  tokenExp=Date.now()+(parseInt(j.expires_in,10)||3600)*1000;
+  return idToken;
+}
+async function fsReq(method,url,body){
+  const tk=await token();
+  return jfetch(url,{method:method,headers:{"Authorization":"Bearer "+tk,"Content-Type":"application/json"},body:body?JSON.stringify(body):undefined});
+}
+const parseDoc=j=>({
+  salt:j.fields&&j.fields.salt&&j.fields.salt.stringValue||"",
+  pin:j.fields&&j.fields.pin&&j.fields.pin.stringValue||"",
+  data:j.fields&&j.fields.data&&j.fields.data.stringValue||"",
+  updateTime:j.updateTime||""
+});
+const newDocFields=(salt,pin,data)=>({fields:{salt:{stringValue:salt},pin:{stringValue:pin},data:{stringValue:data}}});
+async function docGet(){
+  try{return parseDoc(await fsReq("GET",FS_ROOT+"/"+encodeURIComponent(uidFb)))}
+  catch(e){
+    if(e.code==="http"&&e.status===404&&!/database[^.]*does not exist/i.test(e.msg))return null;
+    throw e;
+  }
+}
+const isConflict=e=>e&&e.code==="http"&&(e.status===409||/FAILED_PRECONDITION|ABORTED/.test(e.fstatus));
+
+function cloudQueue(){dirty=true;if(!saving)flush()}
+async function flush(){
+  if(!uidFb||!acct)return;
+  saving=true;
+  while(dirty){
+    dirty=false;
+    setSync("⏳ Saving…");
+    try{
+      const j=await fsReq("PATCH",FS_ROOT+"/"+encodeURIComponent(uidFb)+"?currentDocument.updateTime="+encodeURIComponent(baseTime)+"&updateMask.fieldPaths=data",
+        {fields:{data:{stringValue:JSON.stringify(getData())}}});
+      baseTime=j.updateTime;unsaved=false;
+      setSync("☁️ Saved ✔");
+    }catch(e){
+      if(isConflict(e)){
+        try{
+          const d=await docGet();
+          applyData(JSON.parse(d.data));baseTime=d.updateTime;unsaved=false;
+          setSync("🔄 Newer data from another device loaded");
+          alert("Dusre phone se naya data save hua tha, isliye screen refresh ho gayi. Apni last entry dobara karo.");
+          render();
+        }catch(e2){unsaved=true;setSync("⚠️ Not saved. Tap here to try again.",true)}
+      }else{
+        unsaved=true;
+        setSync("⚠️ Not saved: "+authError(e).split(". ")[0]+". Tap here to try again.",true);
+      }
+      break;
+    }
+  }
+  saving=false;
+}
+async function loadAccount(){
+  applyData({});
+  let d=await docGet();
+  if(!d){
+    let np="";
+    while(!np){
+      const r=prompt("Apna Delete Password set karo (entry delete karte waqt yahi password lagega):");
+      if(r===null)throw new Error("Delete Password set karna zaroori hai. Dobara login karo.");
+      np=r.trim();
+    }
+    const salt=uid()+uid();
+    d=parseDoc(await fsReq("POST",FS_ROOT+"?documentId="+encodeURIComponent(uidFb),
+      newDocFields(salt,hashPw(salt,"pin:"+np),JSON.stringify({}))));
+  }
+  acct={salt:d.salt,pin:d.pin};
+  baseTime=d.updateTime;
+  var db={};try{db=JSON.parse(d.data)||{}}catch(e){}
+  applyData(db);
+}
+function startSession(){page="home";cur=null;sel=null;render();setSync("")}
+function resetSession(){
+  user=null;uidFb=null;acct=null;baseTime="";unsaved=false;authMode="login";acOpen=false;
+  idToken="";refreshTok="";tokenExp=0;
+  applyData({});setSync("");page="home";cur=null;sel=null;render();
+}
+function authError(e){
+  const m=String(e&&e.msg||""),c=e&&e.code;
+  if(c==="timeout")return "Server ne reply nahi diya. Internet check karo aur dobara try karo.";
+  if(c==="network")return "Server tak nahi pahunch paye. Internet check karo.";
+  if(/EMAIL_EXISTS/.test(m))return "Ye username pehle se hai. Dusra username chuno.";
+  if(/INVALID_LOGIN_CREDENTIALS|INVALID_PASSWORD|EMAIL_NOT_FOUND/.test(m))return "Username ya password galat hai.";
+  if(/TOO_MANY_ATTEMPTS/.test(m))return "Bahut zyada galat try. Thodi der baad try karo.";
+  if(/OPERATION_NOT_ALLOWED|CONFIGURATION_NOT_FOUND/.test(m))return "Firebase me Email/Password sign-in enable nahi hai. Authentication me Email/Password enable karo.";
+  if(/WEAK_PASSWORD/.test(m))return "Password kam se kam 6 characters ka hona chahiye.";
+  if(/API key not valid|API_KEY|API key/i.test(m))return "API key galat hai. Firebase config check karo.";
+  if(/database[^.]*does not exist/i.test(m)&&e.status===404)return "Firestore Database nahi bana hai. Firebase me Firestore Database > Create database karo.";
+  if(/SERVICE_DISABLED|has not been used|is disabled/i.test(m))return "Firestore enable nahi hai. Firebase me Firestore Database > Create database karo.";
+  if(e&&(e.status===403||/PERMISSION_DENIED/.test(e.fstatus||"")))return "Database ne access deny kiya. Firestore Rules publish kiye hain?";
+  return "Kuch galat hua: "+(m||(e&&e.message)||e);
+}
+function renderLogin(){
+  const L=authMode==="login";
+  app.innerHTML='<h1>Plywood — '+(L?"Login":"New Account")+'</h1><div class="card">'+
+    '<label>Username</label><input id="lu" autocapitalize="none" autocomplete="username">'+
+    '<label style="margin-top:12px">Password</label><input id="lp" type="password" autocomplete="'+(L?"current-password":"new-password")+'">'+
+    (L?"":'<label style="margin-top:12px">Confirm Password</label><input id="lp2" type="password" autocomplete="new-password"><label style="margin-top:12px">Delete Password</label><input id="lpin" type="password" inputmode="numeric">')+
+    '<button class="p big" style="font-size:17px;padding:14px;margin:16px 0 8px" id="go">'+(L?"Login":"Create Account")+'</button>'+
+    '<button class="big" style="font-size:15px;padding:12px;margin:0" id="sw">'+(L?"➕ Create New Account":"← Back to Login")+'</button></div>';
+  const go=document.getElementById("go");
+  app.querySelectorAll("input").forEach(el=>el.onkeydown=e=>{if(e.key==="Enter")go.click()});
+  document.getElementById("sw").onclick=()=>{authMode=L?"signup":"login";renderLogin()};
+  go.onclick=async()=>{
+    const u=document.getElementById("lu").value.trim().toLowerCase();
+    const pw=document.getElementById("lp").value;
+    if(!L&&(!u||!pw||!document.getElementById("lp2").value||!document.getElementById("lpin").value.trim())){alert("Sab details bharo.");return}
+    if(!/^[a-z0-9._-]{3,30}$/.test(u)){alert("Username 3 se 30 characters ka ho: sirf English letters, numbers, . _ - allowed.");return}
+    if(pw.length<6){alert("Password kam se kam 6 characters ka ho.");return}
+    let pin="";
+    if(!L){
+      if(pw!==document.getElementById("lp2").value){alert("Dono password match nahi karte.");return}
+      pin=document.getElementById("lpin").value.trim();
+    }
+    go.disabled=true;
+    try{
+      go.textContent="Please wait…";
+      uidFb=await authCall(L?"signInWithPassword":"signUp",toEmail(u),pw);
+      if(!L){
+        const salt=uid()+uid();
+        await fsReq("POST",FS_ROOT+"?documentId="+encodeURIComponent(uidFb),newDocFields(salt,hashPw(salt,"pin:"+pin),JSON.stringify({})));
+      }
+      await loadAccount();
+      user=u;
+      startSession();
+    }catch(e){
+      const partial=!L&&uidFb;
+      uidFb=null;idToken="";refreshTok="";
+      alert(authError(e)+(partial?"\n\nAccount ban chuka hai. 'Back to Login' dabao aur wahi username/password se login karo.":""));
+      go.disabled=false;go.textContent=L?"Login":"Create Account";
+    }
+  };
+}
+let acOpen=false;
+function accountCardHtml(){
+  return '<div class="card" style="padding:0;margin:0 0 14px;overflow:hidden">'+
+    '<button id="acHd" style="width:100%;display:flex;justify-content:space-between;align-items:center;font-size:18px;font-weight:600;padding:16px 14px;border:0;border-radius:0;background:transparent;color:var(--tx)"><span>👤 '+esc(user)+'</span><span id="acAr" class="mu">'+(acOpen?'▴':'▾')+'</span></button>'+
+    '<div id="acBody" class="'+(acOpen?'':'hide')+'" style="padding:0 14px 14px;border-top:1px solid var(--bd)">'+
+    '<button id="refresh" style="width:100%;margin-top:12px">🔄 Cloud se latest data load karo</button>'+
+    '<button id="chgPw" style="width:100%;margin-top:8px">🔒 Change Login Password</button>'+
+    '<button id="chgPin" style="width:100%;margin-top:8px">🔑 Change Delete Password</button>'+
+    '<button id="logout" style="width:100%;margin-top:8px;color:var(--rd)">🚪 Logout</button></div></div>';
+}
+function bindAccountCard(){
+  document.getElementById("acHd").onclick=function(){
+    acOpen=!acOpen;
+    document.getElementById("acBody").classList.toggle("hide",!acOpen);
+    document.getElementById("acAr").textContent=acOpen?"▴":"▾";
+  };
+  document.getElementById("logout").onclick=function(){
+    if(saving){alert("Saving chal rahi hai. 2 second ruko phir logout karo.");return}
+    if(unsaved&&!confirm("Kuch changes cloud me save nahi hue. Phir bhi logout?"))return;
+    resetSession();
+  };
+  document.getElementById("refresh").onclick=async function(){
+    if(saving||dirty||unsaved){alert("Pehle save poora hone do.");return}
+    try{setSync("⏳ Loading from cloud…");await loadAccount();render();setSync("☁️ Latest data loaded")}
+    catch(e){setSync("⚠️ Cloud se load nahi hua.",true)}
+  };
+  document.getElementById("chgPw").onclick=async function(){
+    if(saving||dirty||unsaved){alert("Pehle save poora hone do.");return}
+    const oldPw=prompt("Purana password daalo:");if(oldPw===null)return;
+    const n1=prompt("Naya password daalo (kam se kam 6 characters):");if(n1===null)return;
+    if(n1.length<6){alert("Password kam se kam 6 characters ka ho.");return}
+    const n2=prompt("Naya password dobara daalo:");if(n2===null)return;
+    if(n1!==n2){alert("Dono password match nahi karte.");return}
+    try{await authCall("signInWithPassword",toEmail(user),oldPw)}
+    catch(e){if(e.code==="http"){alert("❌ Purana password galat hai.");return}alert(authError(e));return}
+    try{
+      const j=await jfetch("https://identitytoolkit.googleapis.com/v1/accounts:update?key="+FIREBASE_CONFIG.apiKey,{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({idToken:idToken,password:n1,returnSecureToken:true})});
+      idToken=j.idToken;refreshTok=j.refreshToken;tokenExp=Date.now()+(parseInt(j.expiresIn,10)||3600)*1000;
+      alert("✅ Password change ho gaya. Agli baar naye password se login karo.");
+    }catch(e){alert(authError(e))}
+  };
+  document.getElementById("chgPin").onclick=async function(){
+    if(saving||dirty||unsaved){alert("Pehle save poora hone do.");return}
+    const cu=prompt("Abhi ka Delete Password daalo:");if(cu===null)return;
+    if(hashPw(acct.salt,"pin:"+cu.trim())!==acct.pin){alert("❌ Password galat hai.");return}
+    const n1=prompt("Naya Delete Password daalo:");if(n1===null)return;
+    if(!n1.trim()){alert("Delete Password khali nahi ho sakta.");return}
+    const n2=prompt("Naya Delete Password dobara daalo:");if(n2===null)return;
+    if(n1.trim()!==n2.trim()){alert("Dono password match nahi karte.");return}
+    try{
+      const np=hashPw(acct.salt,"pin:"+n1.trim());
+      const j=await fsReq("PATCH",FS_ROOT+"/"+encodeURIComponent(uidFb)+"?updateMask.fieldPaths=pin",{fields:{pin:{stringValue:np}}});
+      acct.pin=np;baseTime=j.updateTime;
+      alert("✅ Delete Password change ho gaya.");
+    }catch(e){alert(authError(e))}
+  };
+}
+// Ask for login again if the app stays in the background for more than 60 seconds
+let hiddenAt=0;
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){hiddenAt=Date.now();return}
+  if(user&&hiddenAt&&Date.now()-hiddenAt>60000&&!saving&&!unsaved)resetSession();
+});
+
+var page="home",cur=null,sel=null,app=document.getElementById("app");
+function ask(msg,yes,okOnly){
+  var m=document.createElement("div");m.className="mo";
+  m.innerHTML='<div class="mb"><p>'+esc(msg)+'</p><div class="row">'+(okOnly?'':'<button type="button" class="cn">Cancel</button>')+'<button type="button" class="'+(okOnly?'p':'dl')+' ok">'+(okOnly?'OK':'Delete')+'</button></div></div>';
+  document.body.appendChild(m);
+  var close=function(){document.body.removeChild(m)};
+  m.querySelector(".ok").onclick=function(){close();if(yes)yes()};
+  var c=m.querySelector(".cn");if(c)c.onclick=close;
+}
+function askPw(msg,yes){
+  var m=document.createElement("div");m.className="mo";
+  m.innerHTML='<div class="mb"><p>'+esc(msg)+'</p><input id="pw" type="password" inputmode="numeric" placeholder="Password" style="margin-bottom:12px"><div class="row"><button type="button" class="cn">Cancel</button><button type="button" class="dl ok">Delete</button></div><div class="bad" id="pe" style="margin-top:10px;font-size:14px"></div></div>';
+  document.body.appendChild(m);
+  var close=function(){document.body.removeChild(m)};
+  m.querySelector(".cn").onclick=close;
+  m.querySelector(".ok").onclick=function(){
+    if(acct&&hashPw(acct.salt,"pin:"+m.querySelector("#pw").value.trim())===acct.pin){close();if(yes)yes()}
+    else{m.querySelector("#pe").textContent="Galat password";m.querySelector("#pw").value=""}
+  };
+  m.querySelector("#pw").focus();
+}
+function buyRows(list){var r=[["Date","Client","Size","Price per Sqft","Pcs","Sqft","Total Amount"]],tp=0,ts=0,ta=0;
+  list.forEach(function(e){var sf=sq(e.size,e.qty),a=Math.round((+e.price)*sf*100)/100;tp+=(+e.qty||0);ts+=sf;ta+=a;r.push([fmt(e.t),e.client,e.size,+e.price,+e.qty,sf,a])});
+  r.push(["TOTAL","","","",tp,Math.round(ts*100)/100,Math.round(ta*100)/100]);return r}
+function saleRows(list){var r=[["Date","Client","Size","Sale price per Sqft","Buy price per Sqft","Pcs","Sqft","Total Sale","Profit/Loss"]],tp=0,ts=0,ta=0,tl=0;
+  list.forEach(function(e){var sf=sq(e.size,e.qty),bp=(e.buyPrice===null||e.buyPrice===undefined)?"":+e.buyPrice,a=Math.round((+e.price)*sf*100)/100,pl=bp===""?0:Math.round(((+e.price)-bp)*sf*100)/100;
+    tp+=(+e.qty||0);ts+=sf;ta+=a;tl+=pl;r.push([fmt(e.t),e.client,e.size,+e.price,bp,+e.qty,sf,a,bp===""?"":pl])});
+  r.push(["TOTAL","","","","",tp,Math.round(ts*100)/100,Math.round(ta*100)/100,Math.round(tl*100)/100]);return r}
+function sheetName(n,used){var b=String(n).replace(/[\[\]:*?\/\\]/g," ").trim().slice(0,28)||"Client",x=b,k=2;while(used[x.toLowerCase()]){x=b+" "+k++}used[x.toLowerCase()]=1;return x}
+function exportX(kind,client){
+  var d=new Date(),ds=d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2);
+  var sheets=[],file;
+  if(kind==="stock"){
+    var r=[["Size","Bought Pcs","Sold Pcs","Stock Pcs","Stock Sqft"]];
+    sizes.slice().forEach(function(z){r.push([z,bought(z),soldQty(z),stockOf(z),sq(z,stockOf(z))])});
+    sheets.push(["Available Stock",r]);file="Available-Stock-"+ds;
+  }else{
+    var isB=kind==="buy",src=(isB?hist:sales).slice().reverse(),mk=isB?buyRows:saleRows,lbl=isB?"Buy":"Sales";
+    if(client){
+      sheets.push([client,mk(src.filter(function(e){return e.client===client}))]);file=lbl+"-"+client.replace(/[^\w\-]+/g,"_")+"-"+ds;
+    }else{
+      sheets.push(["All "+lbl,mk(src)]);
+      var names=[],seen={};(isB?clients:sclients).concat(src.map(function(e){return e.client})).forEach(function(n){if(!seen[n]){seen[n]=1;names.push(n)}});
+      names.forEach(function(n){sheets.push([n,mk(src.filter(function(e){return e.client===n}))])});
+      file=lbl+"-All-Clients-"+ds;
+    }
+  }
+  try{
+    if(window.XLSX){
+      var wb=XLSX.utils.book_new(),used={};
+      sheets.forEach(function(sh){var ws=XLSX.utils.aoa_to_sheet(sh[1]);ws["!cols"]=sh[1][0].map(function(){return{wch:18}});XLSX.utils.book_append_sheet(wb,ws,sheetName(sh[0],used))});
+      XLSX.writeFile(wb,file+".xlsx");return;
+    }
+  }catch(e){}
+  var csv="\ufeff"+sheets[0][1].map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(",")}).join("\n");
+  var a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download=file+".csv";document.body.appendChild(a);a.click();document.body.removeChild(a);
+}
+function esc(t){var d=document.createElement("div");d.textContent=t;return d.innerHTML}
+function go(p,c){page=p;if(c!==undefined)cur=c;sel=null;render()}
+function sep(i){return(/18MM$/.test(sizes[i])&&sizes[i+1]&&!/18MM$/.test(sizes[i+1]))?'<div style="flex-basis:100%;border-top:2px dashed var(--mu);margin:6px 0 10px"></div>':''}
+function bought(z){return hist.reduce(function(a,e){return e.size===z?a+(+e.qty||0):a},0)}
+function soldQty(z){return sales.reduce(function(a,e){return e.size===z?a+(+e.qty||0):a},0)}
+function stockOf(z){return bought(z)-soldQty(z)}
+function perSq(z){var m=String(z).match(/^\s*(\d+(?:\.\d+)?)\s*[*xX]\s*(\d+(?:\.\d+)?)/);return m?(+m[1])*(+m[2]):0}
+function sq(z,q){return Math.round(perSq(z)*(+q||0)*100)/100}
+function sqt(n){return Number(n).toLocaleString("en-IN",{maximumFractionDigits:2})+" Sqft"}
+function totalStockSq(){return sizes.reduce(function(a,z){return a+sq(z,stockOf(z))},0)}
+function lastBuy(z){for(var i=0;i<hist.length;i++){if(hist[i].size===z)return +hist[i].price}return null}
+function fmt(t){var d=new Date(t);return d.toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})+", "+d.toLocaleTimeString("en-IN",{hour:"2-digit",minute:"2-digit",hour12:true})}
+function money(n){return "₹"+(Math.round(n*100)/100)}
+function inr(n){return "₹"+(Math.round(n*100)/100).toLocaleString("en-IN",{maximumFractionDigits:2})}
+function plHTML(){
+  var items=[],S=0,C=0,SQ=0;
+  sales.forEach(function(e){var q=+e.qty||0,amt=(+e.price||0)*sq(e.size,q),cost=(+e.buyPrice||0)*sq(e.size,q);S+=amt;C+=cost;SQ+=q;items.push({e:e,q:q,amt:amt,cost:cost})});
+  items.sort(function(x,y){return (y.e.t||0)-(x.e.t||0)});
+  var net=S-C,cls=net>=0?"ok2":"bad";
+  var h='<button class="back" id="bk">← Back</button><h1>📊 P &amp; L Account</h1>'+
+    '<div class="card"><h2>'+(net>=0?"Net Profit":"Net Loss")+'</h2><div class="nb '+cls+'">'+inr(Math.abs(net))+'</div><div class="mu" style="margin-top:4px">Total sales: '+SQ+' pcs · '+inr(S)+'</div></div>';
+  if(!items.length)return h+'<div class="card mu">No sales yet.</div>';
+  items.forEach(function(it){
+    var e=it.e,pl=it.amt-it.cost,c=pl>=0?"ok2":"bad";
+    h+='<div class="card"><div class="sh"><b class="sold">💰 '+esc(e.client)+'</b><b>'+inr(it.amt)+'</b></div>'+
+      '<div class="mu">'+esc(e.size)+'</div>'+
+      '<div class="ln"><span>'+it.q+' pcs ('+sqt(sq(e.size,it.q))+') @ '+inr(+e.price||0)+'/Sqft</span><span>'+inr(it.amt)+'</span></div>'+
+      '<div class="ln"><span>Buy cost @ '+inr(+e.buyPrice||0)+'/Sqft</span><span>'+inr(it.cost)+'</span></div>'+
+      '<div class="ln"><span>'+(pl>=0?"Profit":"Loss")+'</span><span class="'+c+'">'+inr(Math.abs(pl))+'</span></div>'+
+      '<div class="mu">'+fmt(e.t)+'</div></div>';
+  });
+  return h;
+}
+function histHTML(f,z){
+  var out=[];
+  hist.forEach(function(e,i){
+    if((f===null||e.client===f)&&(!z||e.size===z))
+      out.push('<div class="h"><button class="x" data-d="'+i+'">Delete</button><b>'+esc(e.client)+'</b><div class="mu">'+esc(e.size)+'</div><div class="pr">Price ₹'+e.price+'/Sqft &nbsp;·&nbsp; Quantity taken: '+e.qty+' pcs</div><div class="mu">'+sqt(sq(e.size,e.qty))+'</div><div class="mu">'+fmt(e.t)+'</div></div>');
+  });
+  return out.length?out.join(""):'<div class="mu">Nothing saved yet.</div>';
+}
+function salesHTML(f,z){
+  var out=[];
+  sales.forEach(function(e,i){
+    if((f===null||e.client===f)&&(!z||e.size===z)){
+      var pl=(+e.price-(+e.buyPrice||0))*sq(e.size,e.qty);
+      var plh=(e.buyPrice===null||e.buyPrice===undefined)?'':'<div class="pr '+(pl>=0?'ok2':'bad')+'">'+(pl>=0?'Profit ':'Loss ')+money(Math.abs(pl))+'</div>';
+      out.push('<div class="h"><button class="x" data-ds="'+i+'">Delete</button><b>'+esc(e.client)+'</b><div class="mu">'+esc(e.size)+'</div><div class="pr sold">Sale price ₹'+e.price+'/Sqft &nbsp;·&nbsp; Sold: '+e.qty+' pcs</div><div class="mu">'+sqt(sq(e.size,e.qty))+'</div>'+
+        '<div class="mu">'+(e.buyPrice===null||e.buyPrice===undefined?'Buy price: —':'Bought at ₹'+e.buyPrice+'/Sqft')+'</div>'+plh+'<div class="mu">'+fmt(e.t)+'</div></div>');
+    }
+  });
+  return out.length?out.join(""):'<div class="mu">No sales yet.</div>';
+}
+function bindDel(){
+  Array.prototype.forEach.call(document.querySelectorAll("[data-d]"),function(b){
+    b.onclick=function(){var i=+b.dataset.d,e=hist[i];
+      var after=bought(e.size)-(+e.qty||0)-soldQty(e.size);
+      if(after<0){ask("Can't delete: "+soldQty(e.size)+" pcs of "+e.size+" are already sold. Delete the sales first.",null,true);return}
+      askPw("Delete this entry? Password daalo",function(){hist.splice(i,1);store(K.h,hist);render()})}
+  });
+  Array.prototype.forEach.call(document.querySelectorAll("[data-ds]"),function(b){
+    b.onclick=function(){var i=+b.dataset.ds;askPw("Delete this sale? Stock wapas add ho jayega. Password daalo",function(){sales.splice(i,1);store(K.sl,sales);render()})}
+  });
+}
+function clientListHTML(list,title){
+  return '<button class="back" id="bk">← Back</button><button class="back" id="xl" data-x="'+(page==="sales"?"sales":"buy")+'" style="float:right">📥 Excel</button><h1>'+title+'</h1><input id="sq" type="search" placeholder="🔍 Search client" style="margin-bottom:12px">'+
+    list.map(function(c,i){return '<div class="row crow" style="margin-bottom:8px"><button class="item" style="margin:0;flex:1" data-c="'+i+'">👤 '+esc(c)+'</button><button class="x" style="float:none;padding:10px 12px;font-size:14px" data-dc="'+i+'">Delete</button></div>'}).join("")+
+    '<div id="cf" class="card hide" style="position:fixed;left:14px;right:14px;bottom:calc(92px + env(safe-area-inset-bottom,0px));max-width:532px;margin:0 auto"><div class="row"><input id="cn" placeholder="Client name"><button class="p" id="ca">Add</button></div></div><button class="p" id="fab" style="position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));padding:16px 26px;font-size:18px;font-weight:600;border-radius:999px;box-shadow:0 4px 14px rgba(0,0,0,.25)">+ Add Client</button>';
+}
+function render(){
+  var h="";
+  if(!user){renderLogin();return}
+  if(page==="home"){
+    h=accountCardHtml()+'<button class="p big" id="buy">🛒 Buy</button><button class="big" id="sal">💰 Sales</button><button class="big" id="stk">📦 Available Stock</button><button class="big" id="pl">📊 P &amp; L Account</button>';
+  }else if(page==="stock"){
+    h='<button class="back" id="bk">← Back</button><button class="back" id="xl" data-x="stock" style="float:right">📥 Excel</button><h1>📦 Available Stock</h1>'+sizes.map(function(z,i){return '<button class="item" data-z="'+i+'">'+esc(z)+'<span style="float:right;font-weight:600;text-align:right">'+stockOf(z)+' pcs<br><span class="mu">'+sqt(sq(z,stockOf(z)))+'</span></span></button>'+sep(i)}).join("");
+  }else if(page==="stock1"){
+    h='<button class="back" id="bk">← Stock</button><h1>'+esc(cur)+'</h1><div class="card"><h2>Available Stock</h2><div style="font-size:34px;font-weight:700">'+stockOf(cur)+' pcs</div><div style="font-size:20px;font-weight:600;margin-top:4px">'+sqt(sq(cur,stockOf(cur)))+'</div></div><div class="card"><h2>Buy History</h2>'+histHTML(null,cur)+'</div><div class="card"><h2>Sales History</h2>'+salesHTML(null,cur)+'</div>';
+  }else if(page==="pl"){
+    h=plHTML();
+  }else if(page==="clients"){
+    h=clientListHTML(clients,"Select Client");
+  }else if(page==="sales"){
+    h=clientListHTML(sclients,"💰 Sales – Select Client");
+  }else if(page==="client"){
+    h='<button class="back" id="bk">← Clients</button><button class="back" id="xl" data-x="buy" data-cl="1" style="float:right">📥 Excel</button><h1>👤 '+esc(cur)+'</h1>'+
+      '<div class="card"><h2>Plywood Size</h2><div class="chips">'+
+      sizes.map(function(z,i){return '<button class="chip'+(sel===i?' on':'')+'" data-s="'+i+'">'+esc(z)+'</button>'+sep(i)}).join("")+
+      '</div></div>'+
+      (sel!==null?'<div class="card"><h2>'+esc(sizes[sel])+'</h2><div class="grid"><div><label>Price per Sqft (₹)</label><input id="pr" type="number" inputmode="decimal" placeholder="0"></div><div><label>Quantity taken (pcs)</label><input id="qt" type="number" inputmode="numeric" placeholder="0"></div></div><div class="pl" id="bv"></div><button class="p big" style="font-size:17px;padding:14px;margin:10px 0 0" id="sv">Save</button></div>':'')+
+      '<div class="card"><h2>History</h2>'+histHTML(cur)+'</div>';
+  }else if(page==="sclient"){
+    var lb=sel!==null?lastBuy(sizes[sel]):null;
+    h='<button class="back" id="bk">← Sales Clients</button><button class="back" id="xl" data-x="sales" data-cl="1" style="float:right">📥 Excel</button><h1>👤 '+esc(cur)+'</h1>'+
+      '<div class="card"><h2>Plywood Size</h2><div class="chips">'+
+      sizes.map(function(z,i){return '<button class="chip'+(sel===i?' on':'')+'" data-ss="'+i+'">'+esc(z)+'<span class="cc">('+stockOf(z)+')</span></button>'+sep(i)}).join("")+
+      '</div></div>'+
+      (sel!==null?'<div class="card"><h2>'+esc(sizes[sel])+'</h2>'+
+        '<div class="info"><span class="mu">Available stock</span><b>'+stockOf(sizes[sel])+' pcs</b></div>'+
+        '<div class="info"><span class="mu">Bought at (last price/Sqft)</span><b>'+(lb===null?'—':'₹'+lb)+'</b></div>'+
+        (stockOf(sizes[sel])<=0
+          ?'<div class="pl bad">❌ Stock available nahi hai – sale nahi ho sakti</div></div>'
+          :'<div class="grid"><div><label>Sale price per Sqft (₹)</label><input id="spr" type="number" inputmode="decimal" placeholder="0"></div><div><label>Quantity sold (max '+stockOf(sizes[sel])+')</label><input id="sqt" type="number" inputmode="numeric" min="1" max="'+stockOf(sizes[sel])+'" step="1" placeholder="0"></div></div>'+
+           '<div class="pl" id="pv"></div>'+
+           '<button class="p big" style="font-size:17px;padding:14px;margin:10px 0 0" id="ssv">Save Sale</button></div>'):'')+
+      '<div class="card"><h2>Sales History</h2>'+salesHTML(cur)+'</div>';
+  }
+  app.innerHTML=h;
+  var $=function(i){return document.getElementById(i)};
+  var q$=function(sel,fn){Array.prototype.forEach.call(document.querySelectorAll(sel),fn)};
+  if($("xl"))$("xl").onclick=function(){exportX(this.dataset.x,this.dataset.cl?cur:null)};
+  if($("buy"))$("buy").onclick=function(){go("clients")};
+  if($("sal"))$("sal").onclick=function(){go("sales")};
+  if($("stk"))$("stk").onclick=function(){go("stock")};
+  if($("pl"))$("pl").onclick=function(){go("pl")};
+  q$("[data-z]",function(b){b.onclick=function(){go("stock1",sizes[+b.dataset.z])}});
+  if($("bk"))$("bk").onclick=function(){go(page==="client"?"clients":page==="sclient"?"sales":page==="stock1"?"stock":"home")};
+  q$("[data-c]",function(b){b.onclick=function(){
+    if(page==="sales")go("sclient",sclients[+b.dataset.c]);else go("client",clients[+b.dataset.c])}});
+  q$("[data-dc]",function(b){b.onclick=function(){var i=+b.dataset.dc,isS=page==="sales";
+    askPw("Delete this client? Password daalo",function(){if(isS){sclients.splice(i,1);store(K.sc,sclients)}else{clients.splice(i,1);store(K.c,clients)}render()})}});
+  if($("sq"))$("sq").oninput=function(){var q=this.value.trim().toLowerCase();q$(".crow",function(r){r.style.display=r.querySelector(".item").textContent.toLowerCase().indexOf(q)>-1?"":"none"})};
+  if($("fab"))$("fab").onclick=function(){$("cf").classList.toggle("hide");$("cn").focus()};
+  if($("ca"))$("ca").onclick=function(){var n=$("cn").value.trim();if(!n)return;
+    if(page==="sales"){sclients.push(n);store(K.sc,sclients)}else{clients.push(n);store(K.c,clients)}render()};
+  q$("[data-s]",function(b){b.onclick=function(){sel=+b.dataset.s;render();$("pr").focus()}});
+  q$("[data-ss]",function(b){b.onclick=function(){sel=+b.dataset.ss;render();if($("spr"))$("spr").focus()}});
+  if($("pr")&&$("qt")){
+    var bu=function(){
+      var q=parseFloat($("qt").value),p=parseFloat($("pr").value),el=$("bv"),z=sizes[sel];
+      if(isNaN(q)){el.textContent="1 pc = "+perSq(z)+" Sqft";el.className="pl mu";return}
+      el.className="pl ok2";
+      el.textContent="Sqft: "+perSq(z)+" × "+q+" = "+sqt(sq(z,q))+(isNaN(p)?"":"  ·  Total "+money(p*sq(z,q)));
+    };
+    $("pr").oninput=bu;$("qt").oninput=bu;bu();
+  }
+  if($("sv"))$("sv").onclick=function(){
+    var p=$("pr").value,q=$("qt").value;
+    if(p===""||q===""){ask("Please enter both price and quantity",null,true);return}
+    hist.unshift({client:cur,size:sizes[sel],price:p,qty:q,t:Date.now()});
+    store(K.h,hist);sel=null;render();
+  };
+  if($("spr")){
+    var upd=function(){
+      var sp=parseFloat($("spr").value),qn=parseFloat($("sqt").value),bp=lastBuy(sizes[sel]);
+      var el=$("pv"),av=stockOf(sizes[sel]);
+      if(!isNaN(qn)&&qn>av){el.className="pl bad";el.textContent="Only "+av+" pcs available";return}
+      var z0=sizes[sel];
+      if(isNaN(qn)){el.className="pl mu";el.textContent="1 pc = "+perSq(z0)+" Sqft";return}
+      if(isNaN(sp)||bp===null){el.className="pl ok2";el.textContent="Sqft: "+perSq(z0)+" × "+qn+" = "+sqt(sq(z0,qn));return}
+      var pl=(sp-bp)*sq(z0,qn);
+      el.className="pl "+(pl>=0?"ok2":"bad");
+      el.textContent=(pl>=0?"Profit: ":"Loss: ")+money(Math.abs(pl))+"  (Total sale "+money(sp*sq(z0,qn))+")  ·  Sqft: "+sqt(sq(z0,qn));
+    };
+    $("spr").oninput=upd;$("sqt").oninput=upd;
+  }
+  if($("ssv"))$("ssv").onclick=function(){
+    var p=$("spr").value,q=$("sqt").value,z=sizes[sel];
+    if(p===""||q===""){ask("Please enter both sale price and quantity",null,true);return}
+    var qn=Number(q),pn=Number(p);
+    if(!isFinite(pn)||pn<0){ask("Enter a valid sale price",null,true);return}
+    if(!Number.isInteger(qn)||qn<=0){ask("Quantity must be a whole number more than 0",null,true);return}
+    var av=stockOf(z);
+    if(av<=0){ask("No stock available for "+z,null,true);return}
+    if(qn>av){ask("Only "+av+" pcs available in stock for "+z,null,true);return}
+    sales.unshift({client:cur,size:z,price:String(pn),qty:String(qn),buyPrice:lastBuy(z),t:Date.now()});
+    store(K.sl,sales);sel=null;render();
+  };
+  if(page==="home")bindAccountCard();
+  bindDel();
+}
+render();
+</script>
+<script>
+// ===== Theme picker =====
+(function(){
+  var TH=[["auto","Auto (device)","#9aa5b1"],["cream","Cream","#f1eee6"],["softdark","Soft Dark","#1c2128"],["sage","Sage Green","#5a8a68"],["ocean","Ocean Mist","#4a7fa8"],["midnight","Midnight Blue","#141b2d"],["amber","Amber Night","#a0692a"]];
+  var KEY="ply_theme",root=document.documentElement,cur="auto";
+  try{cur=localStorage.getItem(KEY)||"auto"}catch(e){}
+  if(!TH.some(function(t){return t[0]===cur}))cur="auto";
+  function apply(t){
+    cur=t;
+    if(t==="auto")root.removeAttribute("data-theme");else root.setAttribute("data-theme",t);
+    try{localStorage.setItem(KEY,t)}catch(e){}
+  }
+  apply(cur);
+  var btn=document.createElement("button");btn.id="thBtn";btn.type="button";btn.textContent="🎨";btn.setAttribute("aria-label","Theme");
+  document.body.appendChild(btn);
+  var menu=null;
+  function close(){if(menu){menu.remove();menu=null}}
+  function open(){
+    menu=document.createElement("div");menu.id="thMenu";
+    TH.forEach(function(t){
+      var b=document.createElement("button");b.type="button";if(t[0]===cur)b.className="on";
+      b.innerHTML='<i style="background:'+t[2]+'"></i><span>'+t[1]+'</span>';
+      b.onclick=function(e){e.stopPropagation();apply(t[0]);close()};
+      menu.appendChild(b);
+    });
+    document.body.appendChild(menu);
+  }
+  btn.onclick=function(e){e.stopPropagation();menu?close():open()};
+  document.addEventListener("click",function(e){if(menu&&!menu.contains(e.target))close()});
+})();
+</script>
+<script>
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})});}
+</script>
+</body>
+</html>
